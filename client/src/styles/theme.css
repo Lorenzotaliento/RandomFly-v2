@@ -1,0 +1,70 @@
+/* Palette di colori in stile Apple */
+:root {
+    --background: #f5f5f7; /* Grigio chiaro */
+    --card-bg: #fff; /* Fondo bianco per le card */
+    --text: #333; /* Testo nero scuro */
+    --accent: #333; /* Blu scuro per accenti */
+    --button-bg: rgba(0, 125, 250, 0.1); /* Blu chiaro per bottoni */
+    --button-hover: #333; /* Blu scuro per hover */
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Ombra morbida */
+  }
+  
+  /* Stili globali */
+  .container {
+    max-width: 1200px;       padding: 40px 20px;
+    background-color: var(--background);
+  }
+  
+  /* Form in stile Apple */
+  .form-control {
+    border-radius: 8px;       border: 1px solid #d2d2d7; /* Grigio chiaro */
+    padding: 12px;       font-size: 16px;       transition: border-color 0.3s ease;
+  }
+  .form-control:focus {
+    border-color: var(--accent);       box-shadow: 0 0 0 3px rgba(0, 125, 0, 250, 0.1); /* Glow su focus */
+    outline: none;
+  }
+  
+  /* Pulsanti in stile Apple */
+  .btn-primary {
+    background-color: var(--button-bg);       border: none;
+    color: var(--accent); /* Testo blu */
+    border-radius: 10px;       padding: 10px 20px;
+    font-weight: 500;       font-size: 14px;       transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  .btn-primary:hover {
+    background-color: var(--button-bg); /* Blu più scuro */
+    transform: translate(0.5px); /* Microanimazione */
+  }
+  
+  /* Card in stile Apple */
+  .card {
+    border: none;
+    border-radius: 16px;       background-color: var(--card-bg);       box-shadow: var(--shadow);       transition: transform 0.3s ease;
+    overflow: hidden;
+  }
+  .card:hover {
+    transform: translateY(-5px); /* Effetto floating */
+  }
+  .card-img-top {
+    border-radius: 16px 16px 0 0; /* Angoli arrotondati solo sopra */
+    object-fit: cover;       height: 200px;
+  }
+  .card-title {
+    font-size: 20px;       font-weight: 600;       color: var(--text);       margin-bottom: 8px;
+  }
+  .card-text {
+    font-size: 14px;       color: #6e6e73; /* Grigio medio */
+    margin-bottom: 12px;
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      padding: 20px 10px;
+    }
+    .card-title {
+      font-size: 18px;       }
+  }
+    .btn-primary {
+      padding: 8px 16px;         font-size: 12px;
+    }
