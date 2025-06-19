@@ -34,9 +34,13 @@ const Profile = () => {
         {savedTrips.map((trip) => (
           <Col md={4} key={trip._id} className="mb-4">
             <Card>
-              <Card.Img variant="top" src={trip.image || 'https://via.placeholder.com/150'} />
+              <Card.Img
+                variant="top"
+                src={trip.image || 'https://via.placeholder.com/150'}
+                style={{ filter: 'blur(6px)' }}
+              />
               <Card.Body>
-                <Card.Title>{trip.title}</Card.Title>
+                <Card.Title style={{ filter: 'blur(4px)' }}>{trip.title}</Card.Title>
                 <Card.Text>{trip.description}</Card.Text>
                 <Card.Text>Budget: €{trip.budget}</Card.Text>
                 <Card.Text>Tipo: {trip.type}</Card.Text>

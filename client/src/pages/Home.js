@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Form, Button, Row, Col, Card } from 'react-bootstrap';
+import { Container, Form, Button, Row, Col, Card, Modal, Toast, ToastContainer } from 'react-bootstrap';
 import axios from 'axios';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
@@ -10,6 +10,12 @@ const Home = () => {
   const [budget, setBudget] = useState('');
   const [type, setType] = useState('');
   const [trips, setTrips] = useState([]);
+  const [selectedTrip, setSelectedTrip] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const [toastVariant, setToastVariant] = useState('success')
+
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -34,10 +40,22 @@ const Home = () => {
         {},
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
-      alert('Viaggio salvato!');
+      triggerToast('Viaggio salvato con successo!');
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const handleViewDetails = (trip) => {
+    setSelectedTrip(trip);
+    setShowModal(true);
+    triggerToast('Hai svelato la sorpresa! Questo è il tuo viaggio 🎉', 'danger');
+  };
+
+  const triggerToast = (message,  variant = 'success') => {
+    setToastMessage(message);
+    setToastVariant(variant);
+    setShowToast(true);
   };
 
   return (
@@ -48,7 +66,7 @@ const Home = () => {
         transition={{ duration: 0.5 }}
       >
         <h2 className="mb-4" style={{ fontWeight: 700, fontSize: '36px', color: '#1d1d1f' }}>
-          Esplora il tuo prossimo viaggio
+        Scopri dove ti porterà l’inaspettato.
         </h2>
         <Form onSubmit={handleSearch} className="mb-5">
           <Row>
@@ -94,19 +112,30 @@ const Home = () => {
               transition={{ duration: 0.3 }}
             >
               <Card className="card">
-                <Card.Img variant="top" src={trip.image || 'https://via.placeholder.com/150'} />
+                <Card.Img 
+                  variant="top" 
+                  src={trip.image || 'https://via.placeholder.com/150'} 
+                  style={{ filter: 'blur(10px)' }} 
+                />
                 <Card.Body>
-                  <Card.Title>{trip.title}</Card.Title>
-                  <Card.Text>{trip.description}</Card.Text>
+                 
                   <Card.Text>Budget: €{trip.budget}</Card.Text>
                   <Card.Text>Tipo: {trip.type}</Card.Text>
                   <Button
                     variant="success"
                     onClick={() => handleSaveTrip(trip._id)}
-                    className="btn-primary"
+                    className="btn-primary me-5"
                     style={{ backgroundColor: '#007aff', borderColor: '#007aff' }}
                   >
                     Salva Viaggio
+                  </Button>
+                  <Button
+                    variant="info"
+                    onClick={() => handleViewDetails(trip)}
+                    className="btn-primary"
+                    style={{ backgroundColor: '#007aff', borderColor: '#007aff' }}
+                  >
+                    Visualizza Dettagli
                   </Button>
                 </Card.Body>
               </Card>
@@ -114,6 +143,44 @@ const Home = () => {
           </Col>
         ))}
       </Row>
+
+      <Modal show={showModal} onHide={() => setShowModal(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Dettagli Viaggio</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedTrip && (
+            <>
+              <p><strong>Titolo:</strong> {selectedTrip.title}</p> 
+              <Card.Img 
+                variant="top" 
+                src={selectedTrip.image || 'https://via.placeholder.com/150'} 
+                style={{ filter: 'none' }} 
+              />
+              <p><strong>Descrizione:</strong> {selectedTrip.description}</p>
+              <p><strong>Budget:</strong> €{selectedTrip.budget}</p>
+              <p><strong>Tipo:</strong> {selectedTrip.type}</p>
+            </>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowModal(false)}>
+            Chiudi
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <ToastContainer position="bottom-end" className="p-3">
+  <Toast
+    show={showToast}
+    onClose={() => setShowToast(false)}
+    delay={7000}
+    autohide
+    bg={toastVariant}
+  >
+    <Toast.Body className="text-white">{toastMessage}</Toast.Body>
+  </Toast>
+</ToastContainer>
     </Container>
   );
 };
