@@ -3,7 +3,7 @@ import { Container, Form, Button, Row, Col, Card, Modal, Toast, ToastContainer }
 import axios from 'axios';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { motion } from 'framer-motion'; 
+import { motion } from 'framer-motion';
 
 const Home = () => {
   const { user } = useContext(AuthContext);
@@ -14,8 +14,7 @@ const Home = () => {
   const [showModal, setShowModal] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
-  const [toastVariant, setToastVariant] = useState('success')
-
+  const [toastVariant, setToastVariant] = useState('success');
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -26,12 +25,13 @@ const Home = () => {
       setTrips(res.data);
     } catch (err) {
       console.error(err);
+      triggerToast('Errore nella ricerca dei viaggi.', 'danger');
     }
   };
 
   const handleSaveTrip = async (tripId) => {
     if (!user) {
-      alert('Devi essere loggato per salvare un viaggio!');
+      triggerToast('Devi essere loggato per salvare un viaggio!', 'warning');
       return;
     }
     try {
@@ -40,109 +40,137 @@ const Home = () => {
         {},
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
-      triggerToast('Viaggio salvato con successo!');
+      triggerToast('Viaggio salvato con successo!', 'success');
     } catch (err) {
       console.error(err);
+      triggerToast('Errore nel salvataggio del viaggio.', 'danger');
     }
   };
 
   const handleViewDetails = (trip) => {
     setSelectedTrip(trip);
     setShowModal(true);
-    triggerToast('Hai svelato la sorpresa! Questo è il tuo viaggio 🎉', 'danger');
+    triggerToast('Hai svelato la sorpresa! Questo è il tuo viaggio 🎉', 'info');
   };
 
-  const triggerToast = (message,  variant = 'success') => {
+  const triggerToast = (message, variant = 'success') => {
     setToastMessage(message);
     setToastVariant(variant);
     setShowToast(true);
   };
 
+  // Varianti per animazioni
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.2, delayChildren: 0.1 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5, type: 'spring' } },
+  };
+
   return (
     <Container className="my-5">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
       >
-        <h2 className="mb-4" style={{ fontWeight: 700, fontSize: '36px', color: '#1d1d1f' }}>
-        Scopri dove ti porterà l’inaspettato.
-        </h2>
-        <Form onSubmit={handleSearch} className="mb-5">
-          <Row>
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>Budget</Form.Label>
-                <Form.Control
-                  type="number"
-                  value={budget}
-                  onChange={(e) => setBudget(e.target.value)}
-                  placeholder="Budget massimo (€)"
-                  className="form-control"
-                />
-              </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>Tipo di Viaggio</Form.Label>
-                <Form.Select
-                  value={type}
-                  onChange={(e) => setType(e.target.value)}
-                  className="form-control"
-                >
-                  <option value="">Seleziona...</option>
-                  <option value="Natura">Natura</option>
-                  <option value="Avventura">Avventura</option>
-                  <option value="Relax">Relax</option>
-                </Form.Select>
-              </Form.Group>
-            </Col>
-          </Row>
-          <Button variant="primary" type="submit" className="btn-primary">
-            Cerca Viaggi
-          </Button>
-        </Form>
+        <motion.h2
+          variants={itemVariants}
+          className="mb-4"
+          style={{ fontWeight: 700, fontSize: '36px', color: 'var(--text)' }}
+        >
+          Scopri dove ti porterà l’inaspettato.
+        </motion.h2>
+        <motion.div variants={itemVariants}>
+          <Form onSubmit={handleSearch} className="mb-5">
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Budget</Form.Label>
+                  <Form.Control
+                    type="number"
+                    value={budget}
+                    onChange={(e) => setBudget(e.target.value)}
+                    placeholder="Budget massimo (€)"
+                    className="form-control"
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3">
+                  <Form.Label>Tipo di Viaggio</Form.Label>
+                  <Form.Select
+                    value={type}
+                    onChange={(e) => setType(e.target.value)}
+                    className="form-control"
+                  >
+                    <option value="">Seleziona...</option>
+                    <option value="Natura">Natura</option>
+                    <option value="Avventura">Avventura</option>
+                    <option value="Relax">Relax</option>
+                  </Form.Select>
+                </Form.Group>
+              </Col>
+            </Row>
+            <Button variant="primary" type="submit" className="btn-primary">
+              Cerca Viaggi
+            </Button>
+          </Form>
+        </motion.div>
       </motion.div>
-      <Row>
+
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        className="row"
+      >
         {trips.map((trip) => (
           <Col md={4} key={trip._id} className="mb-4">
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3 }}
+              variants={itemVariants}
+              whileHover={{ scale: 1.02, transition: { duration: 0.3 } }}
             >
               <Card className="card">
-                <Card.Img 
-                  variant="top" 
-                  src={trip.image || 'https://via.placeholder.com/150'} 
-                  style={{ filter: 'blur(10px)' }} 
+                <Card.Img
+                  variant="top"
+                  src={trip.image || 'https://via.placeholder.com/150'}
+                  style={{ filter: 'blur(10px)', borderRadius: '20px 20px 0 0' }}
                 />
                 <Card.Body>
-                 
+                  <Card.Title style={{ filter: 'blur(5px)', opacity: 0.3 }}>Sorpresa...</Card.Title>
                   <Card.Text>Budget: €{trip.budget}</Card.Text>
                   <Card.Text>Tipo: {trip.type}</Card.Text>
-                  <Button
-                    variant="success"
-                    onClick={() => handleSaveTrip(trip._id)}
-                    className="btn-primary me-5"
-                    style={{ backgroundColor: '#007aff', borderColor: '#007aff' }}
-                  >
-                    Salva Viaggio
-                  </Button>
-                  <Button
-                    variant="info"
-                    onClick={() => handleViewDetails(trip)}
-                    className="btn-primary"
-                    style={{ backgroundColor: '#007aff', borderColor: '#007aff' }}
-                  >
-                    Visualizza Dettagli
-                  </Button>
+                  <div className="d-flex gap-2">
+                    <Button
+                      variant="success"
+                      onClick={() => handleSaveTrip(trip._id)}
+                      className="btn-primary"
+                      style={{ backgroundColor: 'var(--secondary-accent)', borderColor: 'var(--secondary-accent)' }}
+                    >
+                      Salva Viaggio
+                    </Button>
+                    <Button
+                      variant="info"
+                      onClick={() => handleViewDetails(trip)}
+                      className="btn-primary"
+                      style={{ background: 'var(--button-bg)', borderColor: 'var(--button-bg)' }}
+                    >
+                      Visualizza Dettagli
+                    </Button>
+                  </div>
                 </Card.Body>
               </Card>
             </motion.div>
           </Col>
         ))}
-      </Row>
+      </motion.div>
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>
         <Modal.Header closeButton>
@@ -151,12 +179,12 @@ const Home = () => {
         <Modal.Body>
           {selectedTrip && (
             <>
-              <p><strong>Titolo:</strong> {selectedTrip.title}</p> 
-              <Card.Img 
-                variant="top" 
-                src={selectedTrip.image || 'https://via.placeholder.com/150'} 
-                style={{ filter: 'none' }} 
+              <Card.Img
+                variant="top"
+                src={selectedTrip.image || 'https://via.placeholder.com/150'}
+                style={{ filter: 'none', borderRadius: '20px 20px 0 0' }}
               />
+              <p><strong>Titolo:</strong> {selectedTrip.title}</p>
               <p><strong>Descrizione:</strong> {selectedTrip.description}</p>
               <p><strong>Budget:</strong> €{selectedTrip.budget}</p>
               <p><strong>Tipo:</strong> {selectedTrip.type}</p>
@@ -171,16 +199,16 @@ const Home = () => {
       </Modal>
 
       <ToastContainer position="bottom-end" className="p-3">
-  <Toast
-    show={showToast}
-    onClose={() => setShowToast(false)}
-    delay={7000}
-    autohide
-    bg={toastVariant}
-  >
-    <Toast.Body className="text-white">{toastMessage}</Toast.Body>
-  </Toast>
-</ToastContainer>
+        <Toast
+          show={showToast}
+          onClose={() => setShowToast(false)}
+          delay={7000}
+          autohide
+          bg={toastVariant}
+        >
+          <Toast.Body className="text-white">{toastMessage}</Toast.Body>
+        </Toast>
+      </ToastContainer>
     </Container>
   );
 };

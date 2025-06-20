@@ -1,70 +1,104 @@
-/* Palette di colori in stile Apple */
+/* Nuova palette di colori ispirata ai viaggi */
 :root {
-    --background: #f5f5f7; /* Grigio chiaro */
-    --card-bg: #fff; /* Fondo bianco per le card */
-    --text: #333; /* Testo nero scuro */
-    --accent: #333; /* Blu scuro per accenti */
-    --button-bg: rgba(0, 125, 250, 0.1); /* Blu chiaro per bottoni */
-    --button-hover: #333; /* Blu scuro per hover */
-    --shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Ombra morbida */
-  }
-  
-  /* Stili globali */
+  --background: #e6f0fa; /* Azzurro chiaro come cielo sereno */
+  --card-bg: #ffffff; /* Bianco per contrasto */
+  --text: #2c3e50; /* Blu scuro per testo leggibile */
+  --accent: #e74c3c; /* Corallo per accenti vivaci */
+  --secondary-accent: #27ae60; /* Verde smeraldo per natura */
+  --button-bg: #3498db; /* Blu oceano per bottoni */
+  --button-hover: #2980b9; /* Blu più scuro per hover */
+  --shadow: 0 6px 18px rgba(0, 0, 0, 0.12); /* Ombra morbida e dinamica */
+  --gradient: linear-gradient(135deg, #3498db, #27ae60); /* Gradiente fresco */
+}
+
+/* Stili globali */
+.container {
+  max-width: 1200px;
+  padding: 40px 20px;
+  background-color: var(--background);
+  border-radius: 20px; /* Angoli più morbidi */
+  box-shadow: var(--shadow);
+}
+
+/* Form in stile viaggio */
+.form-control {
+  border-radius: 12px;
+  border: 2px solid #bdc3c7; /* Grigio tenue */
+  padding: 14px;
+  font-size: 16px;
+  background-color: #fff;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+.form-control:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.2); /* Glow corallo */
+  outline: none;
+}
+
+/* Pulsanti in stile viaggio */
+.btn-primary {
+  background: var(--button-bg);
+  border: none;
+  color: #fff; /* Testo bianco per contrasto */
+  border-radius: 15px;
+  padding: 10px 24px;
+  font-weight: 600;
+  font-size: 14px;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+.btn-primary:hover {
+  background: var(--button-hover);
+  transform: scale(1.05); /* Effetto di ingrandimento */
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+/* Card in stile viaggio */
+.card {
+  border: none;
+  border-radius: 20px;
+  background: linear-gradient(145deg, #ffffff, #f9f9f9); /* Sfumatura leggera */
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+.card-img-top {
+  border-radius: 20px 20px 0 0;
+  object-fit: cover;
+  height: 220px;
+  filter: brightness(1.1); /* Leggero boost per vivacità */
+}
+.card-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 10px;
+  text-transform: uppercase; /* Per un tocco dinamico */
+}
+.card-text {
+  font-size: 15px;
+  color: #7f8c8d; /* Grigio scuro per testo secondario */
+  margin-bottom: 15px;
+  line-height: 1.6;
+}
+
+/* Media query per mobile */
+@media (max-width: 768px) {
   .container {
-    max-width: 1200px;       padding: 40px 20px;
-    background-color: var(--background);
-  }
-  
-  /* Form in stile Apple */
-  .form-control {
-    border-radius: 8px;       border: 1px solid #d2d2d7; /* Grigio chiaro */
-    padding: 12px;       font-size: 16px;       transition: border-color 0.3s ease;
-  }
-  .form-control:focus {
-    border-color: var(--accent);       box-shadow: 0 0 0 3px rgba(0, 125, 0, 250, 0.1); /* Glow su focus */
-    outline: none;
-  }
-  
-  /* Pulsanti in stile Apple */
-  .btn-primary {
-    background-color: var(--button-bg);       border: none;
-    color: var(--accent); /* Testo blu */
-    border-radius: 10px;       padding: 10px 20px;
-    font-weight: 500;       font-size: 14px;       transition: background-color 0.3s ease, transform 0.2s ease;
-  }
-  .btn-primary:hover {
-    background-color: var(--button-bg); /* Blu più scuro */
-    transform: translate(0.5px); /* Microanimazione */
-  }
-  
-  /* Card in stile Apple */
-  .card {
-    border: none;
-    border-radius: 16px;       background-color: var(--card-bg);       box-shadow: var(--shadow);       transition: transform 0.3s ease;
-    overflow: hidden;
-  }
-  .card:hover {
-    transform: translateY(-5px); /* Effetto floating */
-  }
-  .card-img-top {
-    border-radius: 16px 16px 0 0; /* Angoli arrotondati solo sopra */
-    object-fit: cover;       height: 200px;
+      padding: 20px 10px;
+      border-radius: 10px;
   }
   .card-title {
-    font-size: 20px;       font-weight: 600;       color: var(--text);       margin-bottom: 8px;
+      font-size: 18px;
   }
-  .card-text {
-    font-size: 14px;       color: #6e6e73; /* Grigio medio */
-    margin-bottom: 12px;
+  .card-img-top {
+      height: 180px;
   }
-
-  @media (max-width: 768px) {
-    .container {
-      padding: 20px 10px;
-    }
-    .card-title {
-      font-size: 18px;       }
+  .btn-primary {
+      padding: 8px 16px;
+      font-size: 12px;
   }
-    .btn-primary {
-      padding: 8px 16px;         font-size: 12px;
-    }
+}
