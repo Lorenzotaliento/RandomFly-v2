@@ -34,6 +34,17 @@ router.post('/save/:tripId', auth, async (req, res) => {
   }
 });
 
-
+// Rimuovi un viaggio salvato
+router.delete('/savedTrips/:tripId', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId);
+    const tripId = req.params.tripId;
+    user.savedTrips = user.savedTrips.filter(id => id.toString() !== tripId);
+    await user.save();
+    res.json({ message: 'Viaggio rimosso' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 module.exports = router;
