@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { motion } from 'framer-motion';
+import Swal from 'sweetalert2';
 
 const Home = () => {
   const { user } = useContext(AuthContext);
@@ -31,7 +32,13 @@ const Home = () => {
 
   const handleSaveTrip = async (tripId) => {
     if (!user) {
-      triggerToast('Devi essere loggato per salvare un viaggio!', 'warning');
+      await Swal.fire({
+        title: 'Attenzione',
+        text: 'Devi essere loggato per salvare un viaggio!',
+        icon: 'warning',
+        confirmButtonText: 'Ok',
+        confirmButtonColor: '#f0ad4e',
+      });
       return;
     }
     try {
@@ -40,17 +47,67 @@ const Home = () => {
         {},
         { headers: { Authorization: `Bearer ${user.token}` } }
       );
-      triggerToast('Viaggio salvato con successo!', 'success');
+      await Swal.fire({
+        title: 'Viaggio salvato!',
+        text: 'Il viaggio è stato salvato con successo.',
+        icon: 'success',
+        confirmButtonText: 'Ok',
+        confirmButtonColor: '#28a745',
+      });
     } catch (err) {
       console.error(err);
-      triggerToast('Errore nel salvataggio del viaggio.', 'danger');
+      const errorMessage = err.response?.data?.error || err.message || 'Errore sconosciuto';
+      await Swal.fire({
+        title: 'Errore',
+        text: `Non è stato possibile salvare il viaggio: ${errorMessage}`,
+        icon: 'error',
+        confirmButtonText: 'Ok',
+        confirmButtonColor: '#dc3545',
+      });
     }
   };
 
-  const handleViewDetails = (trip) => {
-    setSelectedTrip(trip);
-    setShowModal(true);
-    triggerToast('Hai svelato la sorpresa! Questo è il tuo viaggio 🎉', 'info');
+  const handleViewDetails = async (trip) => {
+    const { value: password } = await Swal.fire({
+      title: 'Inserisci la password per visualizzare i dettagli',
+      input: 'password',
+      inputLabel: 'Password',
+      inputPlaceholder: 'Inserisci la password',
+      inputAttributes: {
+        maxlength: 10,
+        autocapitalize: 'off',
+        autocorrect: 'off',
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Conferma',
+      cancelButtonText: 'Annulla',
+      confirmButtonColor: '#3085d6',
+      inputValidator: (value) => {
+        if (!value) {
+          return 'Devi inserire una password!';
+        }
+      },
+    });
+  
+    if (password === 'l') {
+      await Swal.fire({
+        title: 'Hai svelato la sorpresa!',
+        text: 'Questo è il tuo viaggio 🎉',
+        icon: 'info',
+        confirmButtonText: 'Ok',
+        confirmButtonColor: '#3085d6',
+      });
+      setSelectedTrip(trip);
+      setShowModal(true);
+    } else if (password) {
+      await Swal.fire({
+        title: 'Password errata',
+        text: 'La password inserita non è corretta.',
+        icon: 'error',
+        confirmButtonText: 'Riprova',
+        confirmButtonColor: '#d33',
+      });
+    }
   };
 
   const triggerToast = (message, variant = 'success') => {
@@ -147,6 +204,10 @@ const Home = () => {
                   <Card.Title style={{ filter: 'blur(5px)', opacity: 0.3 }}>Sorpresa...</Card.Title>
                   <Card.Text>Budget: €{trip.budget}</Card.Text>
                   <Card.Text>Tipo: {trip.type}</Card.Text>
+                  <Card.Text>Temperatura: {trip.temperature?.min}°C - {trip.temperature?.max}°C</Card.Text>
+                  <Card.Text>Costo della vita: €{trip.costOfLiving}/giorno</Card.Text>
+                  <Card.Text>Durata: {trip.duration} giorni</Card.Text>
+                  <Card.Text>Stagione: {trip.season}</Card.Text>
                   <div className="d-flex gap-2">
                     <Button
                       variant="success"
